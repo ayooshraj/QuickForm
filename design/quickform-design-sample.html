@@ -1,0 +1,294 @@
+<title>QuickForm Design Sample</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;600;700&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap">
+<style>
+/* Layout: one long study page. Three framed screens (landing, results, public form) sit on a quiet ground, each shown at roughly real proportions. */
+:root {
+  --ground: #f3f3f8;       /* cool paper, biased toward the accent */
+  --surface: #ffffff;
+  --surface-2: #f8f8fc;
+  --ink: #15142b;          /* ink with a violet cast */
+  --ink-2: #55536f;
+  --line: #e3e2ee;
+  --accent: #4a3fd0;       /* deepened version of the existing QuickForm purple */
+  --accent-soft: #ebe9fb;
+  --on-accent: #ffffff;
+  --live: #0f8a5f;         /* semantic: live / published */
+  --live-soft: #def4ea;
+  --warn: #b4481b;
+  --font-display: "Bricolage Grotesque", "Inter", system-ui, sans-serif;
+  --font-body: "Instrument Sans", "Inter", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --ground: #0e0d1c; --surface: #17162a; --surface-2: #1d1c33; --ink: #efeefb; --ink-2: #a3a1c2;
+    --line: #2b2a47; --accent: #8f86ff; --accent-soft: #26244a; --on-accent: #0e0d1c;
+    --live: #46d39d; --live-soft: #123a2e; --warn: #f09a6e; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --ground: #0e0d1c; --surface: #17162a; --surface-2: #1d1c33; --ink: #efeefb; --ink-2: #a3a1c2;
+  --line: #2b2a47; --accent: #8f86ff; --accent-soft: #26244a; --on-accent: #0e0d1c;
+  --live: #46d39d; --live-soft: #123a2e; --warn: #f09a6e; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--ground); color: var(--ink); font: 15px/1.55 var(--font-body); padding-block: 32px 64px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.wrap { max-width: 1040px; margin: 0 auto; display: flex; flex-direction: column; gap: 56px; }
+h1, h2, h3 { font-family: var(--font-display); margin: 0; text-wrap: balance; letter-spacing: -0.02em; }
+.eyebrow { font: 500 12px/1 var(--font-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--ink-2); }
+.intro { display: flex; flex-direction: column; gap: 14px; max-width: 62ch; }
+.intro h1 { font-size: clamp(30px, 5vw, 44px); line-height: 1.05; }
+.intro p { margin: 0; color: var(--ink-2); }
+.tokens { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; }
+.tok { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+.tok i { display: block; height: 44px; }
+.tok span { display: block; padding: 8px 10px; font: 12px/1.3 var(--font-mono); color: var(--ink-2); }
+.section { display: flex; flex-direction: column; gap: 16px; }
+.section > h2 { font-size: 22px; }
+.note { color: var(--ink-2); font-size: 14px; max-width: 70ch; margin: 0; }
+.frame { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; overflow: hidden; box-shadow: 0 1px 0 var(--line), 0 24px 48px -32px rgba(21, 20, 43, .35); }
+.chrome { display: flex; align-items: center; gap: 6px; padding: 10px 14px; border-bottom: 1px solid var(--line); background: var(--surface-2); }
+.chrome b { width: 9px; height: 9px; border-radius: 50%; background: var(--line); }
+.chrome code { margin-left: 10px; font: 12px var(--font-mono); color: var(--ink-2); }
+
+/* landing */
+.nav { display: flex; align-items: center; justify-content: space-between; padding: 16px 28px; gap: 12px; }
+.logo { font: 700 18px var(--font-display); display: flex; align-items: center; gap: 8px; }
+.logo svg { width: 22px; height: 22px; }
+.nav nav { display: flex; gap: 22px; color: var(--ink-2); font-size: 14px; }
+.btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 16px; border-radius: 8px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); font: 500 14px var(--font-body); cursor: pointer; }
+.btn.primary { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+.btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.hero { display: grid; grid-template-columns: 1.05fr 1fr; gap: 36px; padding: 36px 28px 44px; align-items: center; }
+.hero h2 { font-size: clamp(32px, 4.6vw, 52px); line-height: 1.02; }
+.hero p { color: var(--ink-2); margin: 16px 0 24px; max-width: 46ch; }
+.cta { display: flex; gap: 10px; flex-wrap: wrap; }
+.proof { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 22px; }
+.chip { font: 12px var(--font-mono); padding: 5px 9px; border-radius: 6px; background: var(--accent-soft); color: var(--accent); }
+.feed { background: var(--surface-2); border: 1px solid var(--line); border-radius: 12px; padding: 14px; display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.feed-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.feed-head code { font: 12px var(--font-mono); color: var(--ink-2); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pulse { display: inline-flex; align-items: center; gap: 6px; font: 500 12px var(--font-mono); color: var(--live); white-space: nowrap; }
+.pulse::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--live); animation: pulse 1.6s ease-in-out infinite; }
+@keyframes pulse { 0%,100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--live) 50%, transparent); } 60% { box-shadow: 0 0 0 6px transparent; } }
+.rows { display: flex; flex-direction: column; gap: 8px; min-height: 196px; }
+.rw { display: grid; grid-template-columns: 28px 1fr auto; gap: 10px; align-items: center; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; animation: drop .4s ease-out; }
+.rw .av { width: 28px; height: 28px; border-radius: 50%; background: var(--accent-soft); color: var(--accent); display: grid; place-items: center; font: 600 12px var(--font-display); }
+.rw div { min-width: 0; }
+.rw strong { display: block; font-weight: 600; font-size: 13px; }
+.rw small { color: var(--ink-2); font-size: 12px; }
+.rw em { font: normal 600 12px var(--font-mono); color: var(--ink-2); }
+@keyframes drop { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } }
+
+/* results */
+.app { display: grid; grid-template-columns: 190px 1fr; min-height: 520px; }
+.side { border-right: 1px solid var(--line); padding: 16px 12px; display: flex; flex-direction: column; gap: 4px; background: var(--surface-2); }
+.side .logo { padding: 4px 8px 14px; }
+.side a { padding: 8px 10px; border-radius: 8px; color: var(--ink-2); font-size: 14px; display: flex; justify-content: space-between; }
+.side a.on { background: var(--accent-soft); color: var(--accent); font-weight: 600; }
+.main { padding: 20px 22px 24px; display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+.crumb { font-size: 13px; color: var(--ink-2); }
+.titlebar { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
+.titlebar h3 { font-size: 24px; }
+.tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--line); }
+.tabs span { padding: 8px 12px; font-size: 14px; color: var(--ink-2); border-bottom: 2px solid transparent; margin-bottom: -1px; }
+.tabs span.on { color: var(--ink); border-color: var(--accent); font-weight: 600; }
+.kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; }
+.kpi { border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; background: var(--surface); }
+.kpi small { color: var(--ink-2); font-size: 12px; }
+.kpi b { display: block; font: 600 28px/1.1 var(--font-display); font-variant-numeric: tabular-nums; margin-top: 2px; }
+.kpi .d { font: 12px var(--font-mono); color: var(--live); }
+.charts { display: grid; grid-template-columns: 1.4fr 1fr; gap: 12px; }
+.panel { border: 1px solid var(--line); border-radius: 10px; padding: 14px; background: var(--surface); min-width: 0; }
+.panel h4 { margin: 0 0 10px; font: 600 14px var(--font-body); display: flex; justify-content: space-between; gap: 8px; }
+.panel h4 span { font: 12px var(--font-mono); color: var(--ink-2); font-weight: 400; }
+.bar { display: grid; grid-template-columns: 96px 1fr 22px; gap: 8px; align-items: center; font-size: 13px; padding: 3px 0; }
+.bar .t { height: 10px; border-radius: 5px; background: var(--accent-soft); }
+.bar .t i { display: block; height: 100%; border-radius: 5px; background: var(--accent); }
+.bar b { font-variant-numeric: tabular-nums; text-align: right; font-weight: 600; }
+svg text { fill: var(--ink-2); font: 11px var(--font-mono); }
+.tbl { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: 13px; min-width: 520px; }
+th { text-align: left; font: 500 11px var(--font-mono); letter-spacing: .06em; text-transform: uppercase; color: var(--ink-2); padding: 6px 8px; border-bottom: 1px solid var(--line); }
+td { padding: 8px; border-bottom: 1px solid var(--line); }
+.pill { font: 500 11px var(--font-mono); padding: 2px 8px; border-radius: 999px; background: var(--live-soft); color: var(--live); }
+
+/* public form */
+.pf { display: grid; place-items: center; padding: 40px 20px 48px; background: var(--surface-2); }
+.pf-card { width: 100%; max-width: 520px; display: flex; flex-direction: column; gap: 18px; }
+.prog { height: 4px; border-radius: 2px; background: var(--line); }
+.prog i { display: block; width: 50%; height: 100%; border-radius: 2px; background: var(--accent); }
+.pf-card .q { font: 600 clamp(22px, 4vw, 28px)/1.15 var(--font-display); }
+.pf-card .q span { color: var(--accent); font: 500 13px var(--font-mono); display: block; margin-bottom: 8px; }
+.opts { display: flex; flex-direction: column; gap: 8px; }
+.opt { display: flex; align-items: center; gap: 12px; padding: 12px 14px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); font-size: 15px; }
+.opt kbd { font: 600 12px var(--font-mono); width: 24px; height: 24px; display: grid; place-items: center; border-radius: 6px; border: 1px solid var(--line); color: var(--ink-2); }
+.opt.sel { border-color: var(--accent); background: var(--accent-soft); }
+.opt.sel kbd { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+.hint { font: 12px var(--font-mono); color: var(--ink-2); }
+
+.decisions { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; }
+.decisions div { border: 1px solid var(--line); border-radius: 10px; padding: 14px; background: var(--surface); }
+.decisions h3 { font-size: 16px; margin-bottom: 6px; }
+.decisions p { margin: 0; color: var(--ink-2); font-size: 14px; }
+
+@media (max-width: 760px) {
+  .hero, .charts { grid-template-columns: 1fr; }
+  .app { grid-template-columns: 1fr; }
+  .side { flex-direction: row; overflow-x: auto; border-right: 0; border-bottom: 1px solid var(--line); }
+  .side .logo { display: none; }
+  .nav nav { display: none; }
+}
+@media (prefers-reduced-motion: reduce) { .rw, .pulse::before { animation: none; } }
+</style>
+
+<div class="wrap">
+  <header class="intro">
+    <span class="eyebrow">QuickForm · design study</span>
+    <h1>The same product, designed like it was meant to ship.</h1>
+    <p>Three screens from the real app, redrawn: the landing page, the results dashboard and the public form. The numbers on the dashboard are the demo data already in your database (8 responses, plan split 2 / 4 / 2).</p>
+  </header>
+
+  <section class="section">
+    <h2>System</h2>
+    <div class="tokens">
+      <div class="tok"><i style="background:var(--ground)"></i><span>ground</span></div>
+      <div class="tok"><i style="background:var(--ink)"></i><span>ink</span></div>
+      <div class="tok"><i style="background:var(--accent)"></i><span>accent</span></div>
+      <div class="tok"><i style="background:var(--accent-soft)"></i><span>accent-soft</span></div>
+      <div class="tok"><i style="background:var(--live)"></i><span>live (semantic)</span></div>
+      <div class="tok"><i style="background:var(--warn)"></i><span>warn (semantic)</span></div>
+    </div>
+    <p class="note">The purple you already have, deepened and paired with neutrals that lean toward it. Green is reserved for "live" and "published", so it always means something. Headings use Bricolage Grotesque, body uses Instrument Sans, and slugs, counts and endpoints use JetBrains Mono. Dark mode follows your system setting.</p>
+  </section>
+
+  <section class="section">
+    <h2>Landing page</h2>
+    <div class="frame">
+      <div class="chrome"><b></b><b></b><b></b><code>quickform.app</code></div>
+      <div class="nav">
+        <div class="logo"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="6" fill="var(--accent)"/><path d="M7 8h10M7 12h10M7 16h5" stroke="var(--on-accent)" stroke-width="1.8" stroke-linecap="round"/></svg>QuickForm</div>
+        <nav><span>Product</span><span>How it works</span><span>API</span></nav>
+        <div class="cta"><button class="btn" type="button">Sign in</button><button class="btn primary" type="button">Start free</button></div>
+      </div>
+      <div class="hero">
+        <div>
+          <h2>Build the form. Watch the answers arrive.</h2>
+          <p>Publish a form to a link, and every submission shows up on your team's dashboard the second it is sent. Each organisation gets its own private workspace with owner, editor and viewer roles.</p>
+          <div class="cta"><button class="btn primary" type="button">Try the demo workspace</button><button class="btn" type="button">See the architecture</button></div>
+          <div class="proof"><span class="chip">10 field types</span><span class="chip">Socket.IO live</span><span class="chip">CSV export</span><span class="chip">JWT + RBAC</span></div>
+        </div>
+        <div class="feed" aria-label="Live response feed, example">
+          <div class="feed-head"><code>/f/7fOhEYTYZu · Customer feedback</code><span class="pulse">live</span></div>
+          <div class="rows" id="rows"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2>Results dashboard</h2>
+    <div class="frame">
+      <div class="app">
+        <aside class="side">
+          <div class="logo"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="6" fill="var(--accent)"/><path d="M7 8h10M7 12h10M7 16h5" stroke="var(--on-accent)" stroke-width="1.8" stroke-linecap="round"/></svg>QuickForm</div>
+          <a class="on">Forms <span>2</span></a><a>Team</a><a>Settings</a>
+        </aside>
+        <div class="main">
+          <div class="crumb">Acme Studio / Forms / Customer feedback</div>
+          <div class="titlebar"><h3>Customer feedback</h3><div class="cta"><span class="pulse">live</span><button class="btn" type="button">Export CSV</button></div></div>
+          <div class="tabs"><span>Build</span><span>Share</span><span class="on">Results</span><span>Settings</span></div>
+          <div class="kpis">
+            <div class="kpi"><small>Responses</small><b>8</b><span class="d">+8 today</span></div>
+            <div class="kpi"><small>Average rating</small><b>4.0</b><span class="d">of 5</span></div>
+            <div class="kpi"><small>Questions</small><b>6</b></div>
+          </div>
+          <div class="charts">
+            <div class="panel">
+              <h4>Responses per day <span>example, last 14 days</span></h4>
+              <svg viewBox="0 0 420 150" width="100%" role="img" aria-label="Line chart of responses per day">
+                <g stroke="var(--line)" stroke-width="1"><line x1="28" y1="20" x2="410" y2="20"/><line x1="28" y1="65" x2="410" y2="65"/><line x1="28" y1="110" x2="410" y2="110"/></g>
+                <text x="0" y="24">8</text><text x="0" y="69">4</text><text x="0" y="114">0</text>
+                <path d="M28 104 L56 98 L84 92 L112 100 L140 86 L168 80 L196 90 L224 70 L252 74 L280 58 L308 62 L336 46 L364 52 L392 26 L392 110 L28 110 Z" fill="var(--accent-soft)"/>
+                <path d="M28 104 L56 98 L84 92 L112 100 L140 86 L168 80 L196 90 L224 70 L252 74 L280 58 L308 62 L336 46 L364 52 L392 26" fill="none" stroke="var(--accent)" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"/>
+                <circle cx="392" cy="26" r="4.5" fill="var(--accent)"/><circle cx="392" cy="26" r="9" fill="none" stroke="var(--accent)" stroke-opacity=".3"/>
+                <text x="28" y="136">Nov 2</text><text x="190" y="136">Nov 9</text><text x="358" y="136">Nov 15</text>
+              </svg>
+            </div>
+            <div class="panel">
+              <h4>Plan <span>8 answers</span></h4>
+              <div class="bar"><span>Free</span><div class="t"><i style="width:50%"></i></div><b>2</b></div>
+              <div class="bar"><span>Pro</span><div class="t"><i style="width:100%"></i></div><b>4</b></div>
+              <div class="bar"><span>Enterprise</span><div class="t"><i style="width:50%"></i></div><b>2</b></div>
+              <h4 style="margin-top:14px">Features used <span>multi-select</span></h4>
+              <div class="bar"><span>Builder</span><div class="t"><i style="width:100%"></i></div><b>8</b></div>
+              <div class="bar"><span>Analytics</span><div class="t"><i style="width:75%"></i></div><b>6</b></div>
+              <div class="bar"><span>Live dashboard</span><div class="t"><i style="width:50%"></i></div><b>4</b></div>
+            </div>
+          </div>
+          <div class="panel tbl">
+            <h4>Latest responses <span>search · filter · click a row for detail</span></h4>
+            <table>
+              <thead><tr><th>Name</th><th>Email</th><th>Plan</th><th>Rating</th><th>Status</th></tr></thead>
+              <tbody>
+                <tr><td>Hugo</td><td>hugo@example.com</td><td>Pro</td><td>3</td><td><span class="pill">new</span></td></tr>
+                <tr><td>Gia</td><td>gia@example.com</td><td>Enterprise</td><td>5</td><td><span class="pill">new</span></td></tr>
+                <tr><td>Farid</td><td>farid@example.com</td><td>Pro</td><td>4</td><td>read</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2>Public form</h2>
+    <div class="frame">
+      <div class="chrome"><b></b><b></b><b></b><code>quickform.app/f/7fOhEYTYZu</code></div>
+      <div class="pf">
+        <div class="pf-card">
+          <div class="prog" role="progressbar" aria-valuenow="3" aria-valuemin="0" aria-valuemax="6"><i></i></div>
+          <div class="q"><span>3 / 6 · required</span>Which plan are you on?</div>
+          <div class="opts">
+            <div class="opt"><kbd>A</kbd>Free</div>
+            <div class="opt sel"><kbd>B</kbd>Pro</div>
+            <div class="opt"><kbd>C</kbd>Enterprise</div>
+          </div>
+          <div class="cta"><button class="btn primary" type="button">Next</button><span class="hint">press Enter ↵</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2>What this means for the build</h2>
+    <div class="decisions">
+      <div><h3>No new backend</h3><p>Every screen above reads from endpoints you already wrote. The work is React and CSS.</p></div>
+      <div><h3>Small component set</h3><p>Button, Input, Badge, Tabs, Table, Chart. Around ten components you can explain line by line.</p></div>
+      <div><h3>Plain CSS tokens</h3><p>One variables file with light and dark themes. No framework to learn before the interview.</p></div>
+    </div>
+  </section>
+</div>
+
+<script>
+(function () {
+  var data = [
+    ["Gia", "Enterprise", "5"], ["Hugo", "Pro", "3"], ["Farid", "Pro", "4"], ["Esha", "Free", "5"],
+    ["Dev", "Enterprise", "4"], ["Chloe", "Pro", "3"], ["Ben", "Pro", "4"], ["Ava", "Free", "5"]
+  ];
+  var rows = document.getElementById("rows"), i = 0, shown = [];
+  function render() {
+    rows.innerHTML = "";
+    shown.forEach(function (r) {
+      var el = document.createElement("div"); el.className = "rw";
+      el.innerHTML = '<span class="av">' + r[0][0] + '</span><div><strong>' + r[0] + '</strong><small>' + r[1] + ' plan</small></div><em>' + r[2] + ' / 5</em>';
+      rows.appendChild(el);
+    });
+  }
+  function push() { shown.unshift(data[i % data.length]); shown = shown.slice(0, 4); i++; render(); }
+  for (var k = 0; k < 4; k++) push();
+  if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) setInterval(push, 2600);
+})();
+</script>
