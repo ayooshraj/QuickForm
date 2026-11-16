@@ -2,6 +2,8 @@
 
 QuickForm lets organisations build custom forms, publish them as a shareable link, and watch responses arrive **live** on an analytics dashboard. Each organisation is an isolated tenant with its own team (owner, editors, viewers).
 
+**Live demo:** https://quickform-1-sk1w.onrender.com  (API: https://quickform-ydqm.onrender.com/health). Hosted on Render's free tier with MongoDB Atlas, so the first load after idle can take about 30 seconds.
+
 **Stack:** Node.js · Express · MongoDB (Mongoose) · Socket.IO · JWT · React (Vite) · Cloudinary · Render
 
 ## Features
